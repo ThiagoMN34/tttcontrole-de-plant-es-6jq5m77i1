@@ -21,11 +21,17 @@ interface CrudPageProps {
   title: string
   items: any[]
   columns: { key: string; label: string }[]
-  renderForm: (close: () => void) => React.ReactNode
+  renderForm: React.ComponentType<{ close: () => void }>
   onDelete: (id: string) => void
 }
 
-export default function CrudPage({ title, items, columns, renderForm, onDelete }: CrudPageProps) {
+export default function CrudPage({
+  title,
+  items,
+  columns,
+  renderForm: FormComponent,
+  onDelete,
+}: CrudPageProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -42,7 +48,7 @@ export default function CrudPage({ title, items, columns, renderForm, onDelete }
             <DialogHeader>
               <DialogTitle>Novo {title}</DialogTitle>
             </DialogHeader>
-            {renderForm(() => setOpen(false))}
+            <FormComponent close={() => setOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>

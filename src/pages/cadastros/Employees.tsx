@@ -5,54 +5,55 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 
+function EmployeeForm({ close }: { close: () => void }) {
+  const { addEntity } = useMainStore()
+  const [form, setForm] = useState({ name: '', role: '', contact: '' })
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        addEntity('employees', form)
+        close()
+      }}
+      className="space-y-4 mt-4"
+    >
+      <div className="space-y-2">
+        <Label>Nome Completo</Label>
+        <Input
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+          placeholder="Ex: Ana Silva"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Cargo</Label>
+        <Input
+          value={form.role}
+          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          required
+          placeholder="Ex: Enfermeira"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Contato / Telefone</Label>
+        <Input
+          value={form.contact}
+          onChange={(e) => setForm({ ...form, contact: e.target.value })}
+          required
+          placeholder="(00) 00000-0000"
+        />
+      </div>
+      <Button type="submit" className="w-full mt-4">
+        Salvar Funcionário
+      </Button>
+    </form>
+  )
+}
+
 export default function Employees() {
-  const { employees, addEntity, removeEntity } = useMainStore()
-
-  const renderForm = (close: () => void) => {
-    const [form, setForm] = useState({ name: '', role: '', contact: '' })
-
-    return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          addEntity('employees', form)
-          close()
-        }}
-        className="space-y-4 mt-4"
-      >
-        <div className="space-y-2">
-          <Label>Nome Completo</Label>
-          <Input
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            required
-            placeholder="Ex: Ana Silva"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Cargo</Label>
-          <Input
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-            required
-            placeholder="Ex: Enfermeira"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Contato / Telefone</Label>
-          <Input
-            value={form.contact}
-            onChange={(e) => setForm({ ...form, contact: e.target.value })}
-            required
-            placeholder="(00) 00000-0000"
-          />
-        </div>
-        <Button type="submit" className="w-full mt-4">
-          Salvar Funcionário
-        </Button>
-      </form>
-    )
-  }
+  const { employees, removeEntity } = useMainStore()
 
   return (
     <CrudPage
@@ -63,7 +64,7 @@ export default function Employees() {
         { key: 'role', label: 'Cargo' },
         { key: 'contact', label: 'Contato' },
       ]}
-      renderForm={renderForm}
+      renderForm={EmployeeForm}
       onDelete={(id: string) => removeEntity('employees', id)}
     />
   )

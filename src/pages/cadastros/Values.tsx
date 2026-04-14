@@ -13,50 +13,52 @@ import {
 } from '@/components/ui/select'
 import { formatCurrency } from '@/lib/format'
 
-export default function Values() {
-  const { values, addEntity, removeEntity } = useMainStore()
+function ValueForm({ close }: { close: () => void }) {
+  const { addEntity } = useMainStore()
+  const [form, setForm] = useState({ type: 'hourly', amount: '' })
 
-  const renderForm = (close: () => void) => {
-    const [form, setForm] = useState({ type: 'hourly', amount: '' })
-    return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          addEntity('values', { ...form, amount: Number(form.amount) })
-          close()
-        }}
-        className="space-y-4 mt-4"
-      >
-        <div className="space-y-2">
-          <Label>Tipo de Cobrança</Label>
-          <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="hourly">Valor por Hora</SelectItem>
-              <SelectItem value="fixed">Fixo por Plantão</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label>Valor Base (R$)</Label>
-          <Input
-            type="number"
-            step="0.01"
-            min="0"
-            value={form.amount}
-            onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            required
-            placeholder="0.00"
-          />
-        </div>
-        <Button type="submit" className="w-full mt-4">
-          Salvar Valor
-        </Button>
-      </form>
-    )
-  }
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        addEntity('values', { ...form, amount: Number(form.amount) })
+        close()
+      }}
+      className="space-y-4 mt-4"
+    >
+      <div className="space-y-2">
+        <Label>Tipo de Cobrança</Label>
+        <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="hourly">Valor por Hora</SelectItem>
+            <SelectItem value="fixed">Fixo por Plantão</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
+        <Label>Valor Base (R$)</Label>
+        <Input
+          type="number"
+          step="0.01"
+          min="0"
+          value={form.amount}
+          onChange={(e) => setForm({ ...form, amount: e.target.value })}
+          required
+          placeholder="0.00"
+        />
+      </div>
+      <Button type="submit" className="w-full mt-4">
+        Salvar Valor
+      </Button>
+    </form>
+  )
+}
+
+export default function Values() {
+  const { values, removeEntity } = useMainStore()
 
   const formattedItems = values.map((v: any) => ({
     ...v,
@@ -72,7 +74,7 @@ export default function Values() {
         { key: 'typeLabel', label: 'Tipo' },
         { key: 'amountLabel', label: 'Valor Base' },
       ]}
-      renderForm={renderForm}
+      renderForm={ValueForm}
       onDelete={(id: string) => removeEntity('values', id)}
     />
   )
