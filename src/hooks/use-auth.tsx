@@ -35,19 +35,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchProfile = (userId: string) => {
-    supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-      .then(({ data }) => {
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single()
+
+      if (error) {
+        console.error('Erro ao buscar perfil:', error)
+        setProfile(null)
+      } else {
         setProfile(data as UserProfile)
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
+      }
+    } catch (err) {
+      console.error('Erro inesperado ao buscar perfil:', err)
+      setProfile(null)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -58,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null)
 
       if (session?.user) {
+        setLoading(true)
         fetchProfile(session.user.id)
       } else {
         setProfile(null)
@@ -69,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
+        setLoading(true)
         fetchProfile(session.user.id)
       } else {
         setLoading(false)
