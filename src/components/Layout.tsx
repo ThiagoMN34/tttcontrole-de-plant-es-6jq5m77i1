@@ -30,37 +30,21 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-} from '@/components/ui/dropdown-menu'
-import { useAuth } from '@/hooks/use-auth'
-
 export default function Layout() {
   const location = useLocation()
-  const { profile, signOut } = useAuth()
-
-  const isMaster = profile?.role === 'master'
 
   const menu = [
-    ...(isMaster ? [{ title: 'Dashboard', url: '/', icon: LayoutDashboard }] : []),
+    { title: 'Dashboard', url: '/', icon: LayoutDashboard },
     { title: 'Aprovações', url: '/aprovacoes', icon: CalendarCheck },
-    ...(isMaster ? [{ title: 'Pagamentos', url: '/pagamentos', icon: DollarSign }] : []),
+    { title: 'Pagamentos', url: '/pagamentos', icon: DollarSign },
   ]
-  const cadastros = isMaster
-    ? [
-        { title: 'Funcionários', url: '/cadastros/funcionarios', icon: Users },
-        { title: 'Aprovadores', url: '/cadastros/aprovadores', icon: UserCheck },
-        { title: 'Hóspedes', url: '/cadastros/hospedes', icon: Bed },
-        { title: 'Motivos', url: '/cadastros/motivos', icon: Tag },
-        { title: 'Valores', url: '/cadastros/valores', icon: Settings },
-        { title: 'Usuários do Sistema', url: '/cadastros/usuarios', icon: Users },
-      ]
-    : []
+  const cadastros = [
+    { title: 'Funcionários', url: '/cadastros/funcionarios', icon: Users },
+    { title: 'Aprovadores', url: '/cadastros/aprovadores', icon: UserCheck },
+    { title: 'Hóspedes', url: '/cadastros/hospedes', icon: Bed },
+    { title: 'Motivos', url: '/cadastros/motivos', icon: Tag },
+    { title: 'Valores', url: '/cadastros/valores', icon: Settings },
+  ]
 
   return (
     <SidebarProvider>
@@ -149,26 +133,6 @@ export default function Layout() {
                   </div>
                 </DialogContent>
               </Dialog>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm outline-none cursor-pointer hover:bg-primary/20 transition-colors">
-                    {profile?.name?.substring(0, 2).toUpperCase() || 'US'}
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel>{profile?.name}</DropdownMenuLabel>
-                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground truncate">
-                    {profile?.email}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => signOut()}
-                    className="text-red-600 cursor-pointer"
-                  >
-                    Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </header>
           <main className="flex-1 overflow-auto bg-transparent">
