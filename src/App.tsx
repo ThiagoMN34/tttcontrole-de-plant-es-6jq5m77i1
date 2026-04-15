@@ -18,6 +18,8 @@ import Approvers from './pages/cadastros/Approvers'
 import Guests from './pages/cadastros/Guests'
 import Reasons from './pages/cadastros/Reasons'
 import Values from './pages/cadastros/Values'
+import Users from './pages/cadastros/Users'
+import UpdatePassword from './pages/UpdatePassword'
 
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
@@ -29,6 +31,7 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/registrar-plantao" element={<PublicRegisterShift />} />
+            <Route path="/update-password" element={<UpdatePassword />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
@@ -39,6 +42,7 @@ const App = () => (
                 <Route path="/cadastros/hospedes" element={<Guests />} />
                 <Route path="/cadastros/motivos" element={<Reasons />} />
                 <Route path="/cadastros/valores" element={<Values />} />
+                <Route path="/cadastros/usuarios" element={<Users />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFound />} />

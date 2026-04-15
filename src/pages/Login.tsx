@@ -12,7 +12,8 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { signIn } = useAuth()
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
+  const { signIn, resetPasswordForEmail } = useAuth()
   const navigate = useNavigate()
   const { toast } = useToast()
 
@@ -26,6 +27,32 @@ export default function Login() {
       toast({ title: 'Erro', description: 'Credenciais inválidas.', variant: 'destructive' })
     } else {
       navigate('/')
+    }
+  }
+
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) {
+      toast({
+        title: 'Erro',
+        description: 'Informe seu email para recuperar a senha.',
+        variant: 'destructive',
+      })
+      return
+    }
+    setIsSubmitting(true)
+    const { error } = await resetPasswordForEmail(email)
+    setIsSubmitting(false)
+
+    if (error) {
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível enviar o email.',
+        variant: 'destructive',
+      })
+    } else {
+      toast({ title: 'Sucesso', description: 'Link de acesso temporário enviado para seu email!' })
+      setIsForgotPassword(false)
     }
   }
 
@@ -51,19 +78,52 @@ export default function Login() {
                 placeholder="seu@email.com"
               />
             </div>
-            <div className="space-y-2">
-              <Label>Senha</Label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-              />
-            </div>
-            <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
-              {isSubmitting ? 'Entrando...' : 'Entrar'}
-            </Button>
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Senha</Label>
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Esqueci a senha
+                  </button>
+                </div>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                />
+              </div>
+            )}
+
+            {isForgotPassword ? (
+              <div className="flex flex-col gap-2 mt-4">
+                <Button
+                  type="button"
+                  onClick={handleForgot}
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Enviando...' : 'Enviar Link de Acesso'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsForgotPassword(false)}
+                  className="w-full"
+                >
+                  Voltar ao Login
+                </Button>
+              </div>
+            ) : (
+              <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
+                {isSubmitting ? 'Entrando...' : 'Entrar'}
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>
