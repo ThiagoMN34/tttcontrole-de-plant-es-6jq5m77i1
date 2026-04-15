@@ -9,4 +9,4 @@ export const getEmployees = async () =>
 export const createEmployee = async (data: any) =>
   await supabase.from('employees').insert(data).select().single().throwOnError()
 export const deleteEmployee = async (id: string) =>
-  await supabase
+  await supabase.from('employees').delete().eq('id', id).throwOnError()
