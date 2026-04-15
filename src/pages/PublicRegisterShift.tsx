@@ -25,8 +25,9 @@ export default function PublicRegisterShift() {
     endTime: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.employeeId || !form.guestId || !form.reasonId || !form.startTime || !form.endTime) {
       toast({
@@ -46,8 +47,19 @@ export default function PublicRegisterShift() {
       return
     }
 
-    addEntity('shifts', { ...form, status: 'pending' })
-    setSubmitted(true)
+    setLoading(true)
+    try {
+      await addEntity('shifts', { ...form, status: 'pending' })
+      setSubmitted(true)
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Ocorreu um erro ao salvar o plantão. Tente novamente.',
+        variant: 'destructive',
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {
@@ -160,9 +172,10 @@ export default function PublicRegisterShift() {
             </div>
             <Button
               type="submit"
+              disabled={loading}
               className="w-full mt-8 h-12 text-lg shadow-md hover:shadow-lg transition-shadow"
             >
-              Enviar Registro
+              {loading ? 'Enviando...' : 'Enviar Registro'}
             </Button>
           </form>
         </CardContent>
