@@ -1,14 +1,11 @@
-export const formatCurrency = (val: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(val)
-}
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
-export const formatDate = (dateStr: string) => {
-  if (!dateStr) return '-'
-  return new Intl.DateTimeFormat('pt-BR', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(new Date(dateStr))
+export function formatDate(date: string | Date | undefined | null) {
+  if (!date) return '-'
+  try {
+    return format(new Date(date), 'dd/MM/yyyy HH:mm', { locale: ptBR })
+  } catch (error) {
+    return '-'
+  }
 }

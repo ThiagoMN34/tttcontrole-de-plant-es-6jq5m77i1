@@ -16,19 +16,19 @@ function ApproverForm({ close }: { close: () => void }) {
         addEntity('approvers', form)
         close()
       }}
-      className="space-y-4 mt-4"
+      className="space-y-4"
     >
       <div className="space-y-2">
-        <Label>Nome do Gestor/Aprovador</Label>
+        <Label>Nome Completo</Label>
         <Input
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
-          placeholder="Ex: Dra. Helena"
+          placeholder="Ex: Carlos Silva"
         />
       </div>
       <Button type="submit" className="w-full mt-4">
-        Salvar Aprovador
+        Salvar
       </Button>
     </form>
   )

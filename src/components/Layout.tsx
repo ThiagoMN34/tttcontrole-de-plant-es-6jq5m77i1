@@ -1,145 +1,98 @@
-import {
-  SidebarProvider,
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarHeader,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
-  CalendarCheck,
+  CheckSquare,
   DollarSign,
   Users,
-  UserCheck,
-  Bed,
-  Tag,
+  UserCog,
+  BedDouble,
+  FileText,
   Settings,
-  QrCode,
+  Menu,
 } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
+import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
+
+const navItems = [
+  { icon: LayoutDashboard, label: 'Painel', href: '/' },
+  { icon: CheckSquare, label: 'Aprovações', href: '/aprovacoes' },
+  { icon: DollarSign, label: 'Pagamentos', href: '/pagamentos' },
+  { icon: Users, label: 'Funcionários', href: '/cadastros/funcionarios' },
+  { icon: UserCog, label: 'Aprovadores', href: '/cadastros/aprovadores' },
+  { icon: BedDouble, label: 'Hóspedes', href: '/cadastros/hospedes' },
+  { icon: FileText, label: 'Motivos', href: '/cadastros/motivos' },
+  { icon: Settings, label: 'Valores', href: '/cadastros/valores' },
+]
+
 export default function Layout() {
+  const [open, setOpen] = useState(false)
   const location = useLocation()
 
-  const menu = [
-    { title: 'Dashboard', url: '/', icon: LayoutDashboard },
-    { title: 'Aprovações', url: '/aprovacoes', icon: CalendarCheck },
-    { title: 'Pagamentos', url: '/pagamentos', icon: DollarSign },
-  ]
-  const cadastros = [
-    { title: 'Funcionários', url: '/cadastros/funcionarios', icon: Users },
-    { title: 'Aprovadores', url: '/cadastros/aprovadores', icon: UserCheck },
-    { title: 'Hóspedes', url: '/cadastros/hospedes', icon: Bed },
-    { title: 'Motivos', url: '/cadastros/motivos', icon: Tag },
-    { title: 'Valores', url: '/cadastros/valores', icon: Settings },
-  ]
+  const NavLinks = () => (
+    <div className="space-y-1 py-4">
+      {navItems.map((item) => {
+        const isActive = location.pathname === item.href
+        return (
+          <Link
+            key={item.href}
+            to={item.href}
+            onClick={() => setOpen(false)}
+            className={cn(
+              'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+            )}
+          >
+            <item.icon className={cn('w-5 h-5', isActive ? 'text-primary' : 'text-slate-400')} />
+            {item.label}
+          </Link>
+        )
+      })}
+    </div>
+  )
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
-        <Sidebar>
-          <SidebarHeader className="p-4 border-b">
-            <h2 className="text-lg font-bold text-primary flex items-center gap-2">
-              <CalendarCheck className="w-5 h-5" /> Plantões
-            </h2>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {menu.map((m) => (
-                    <SidebarMenuItem key={m.url}>
-                      <SidebarMenuButton asChild isActive={location.pathname === m.url}>
-                        <Link to={m.url}>
-                          <m.icon className="w-4 h-4" /> <span>{m.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-            {cadastros.length > 0 && (
-              <SidebarGroup>
-                <div className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4 mb-2">
-                  Cadastros
-                </div>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {cadastros.map((m) => (
-                      <SidebarMenuItem key={m.url}>
-                        <SidebarMenuButton asChild isActive={location.pathname === m.url}>
-                          <Link to={m.url}>
-                            <m.icon className="w-4 h-4" /> <span>{m.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            )}
-          </SidebarContent>
-        </Sidebar>
-        <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-          <header className="h-14 border-b flex items-center justify-between px-4 bg-card shrink-0 shadow-sm z-10">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger />
-              <span className="font-medium text-slate-700 hidden sm:inline-block border-l pl-4 ml-2 border-slate-200">
-                Administração
-              </span>
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+        <div className="font-bold text-lg text-primary">Controle de Plantões</div>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-5 h-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[280px] p-0">
+            <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
+            <div className="p-6 pb-2">
+              <div className="font-bold text-xl text-primary">Menu</div>
             </div>
-            <div className="flex items-center gap-3">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="hidden sm:flex text-primary border-primary/20 hover:bg-primary/5"
-                  >
-                    <QrCode className="w-4 h-4 mr-2" /> Gerar QR Code
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md text-center">
-                  <DialogHeader>
-                    <DialogTitle className="text-center">QR Code para Registro</DialogTitle>
-                  </DialogHeader>
-                  <div className="flex flex-col items-center justify-center p-6 gap-4">
-                    <img
-                      src="https://img.usecurling.com/i?q=qrcode&shape=outline&color=solid-black"
-                      alt="QR Code"
-                      className="w-48 h-48 opacity-80"
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Imprima e disponibilize para escaneamento.
-                    </p>
-                    <Button asChild variant="secondary" className="w-full">
-                      <Link to="/registrar-plantao" target="_blank">
-                        Acessar Portal Mobile
-                      </Link>
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto bg-transparent">
-            <Outlet />
-          </main>
+            <ScrollArea className="h-[calc(100vh-80px)] px-3">
+              <NavLinks />
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
+      </header>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 min-h-screen sticky top-0 h-screen">
+        <div className="p-6 border-b border-slate-100">
+          <div className="font-bold text-xl text-primary">Controle de Plantões</div>
+          <div className="text-xs text-slate-500 mt-1">Gestão simplificada sem login</div>
         </div>
-      </div>
-    </SidebarProvider>
+        <ScrollArea className="flex-1 px-3">
+          <NavLinks />
+        </ScrollArea>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 w-full max-w-[100vw]">
+        <Outlet />
+      </main>
+    </div>
   )
 }

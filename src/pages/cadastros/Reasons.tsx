@@ -16,19 +16,19 @@ function ReasonForm({ close }: { close: () => void }) {
         addEntity('reasons', form)
         close()
       }}
-      className="space-y-4 mt-4"
+      className="space-y-4"
     >
       <div className="space-y-2">
-        <Label>Descrição do Motivo</Label>
+        <Label>Motivo (Ex: Falta, Reforço, Feriado)</Label>
         <Input
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
-          placeholder="Ex: Cobertura de Feriado"
+          placeholder="Ex: Cobertura de Férias"
         />
       </div>
       <Button type="submit" className="w-full mt-4">
-        Salvar Motivo
+        Salvar
       </Button>
     </form>
   )
@@ -41,7 +41,7 @@ export default function Reasons() {
     <CrudPage
       title="Motivos de Plantão"
       items={reasons}
-      columns={[{ key: 'name', label: 'Descrição' }]}
+      columns={[{ key: 'name', label: 'Motivo' }]}
       renderForm={ReasonForm}
       onDelete={(id: string) => removeEntity('reasons', id)}
     />

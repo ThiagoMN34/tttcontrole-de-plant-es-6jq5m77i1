@@ -64,19 +64,25 @@ export default function Approvals() {
               {pendingShifts.map((s: any) => (
                 <TableRow key={s.id} className="hover:bg-slate-50/50">
                   <TableCell className="font-medium whitespace-nowrap">
-                    {employees.find((e: any) => e.id === s.employeeId)?.name}
+                    {employees.find((e: any) => e.id === (s.employeeId || s.employee_id))?.name}
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
-                    {guests.find((e: any) => e.id === s.guestId)?.name}
+                    {guests.find((e: any) => e.id === (s.guestId || s.guest_id))?.name}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">{formatDate(s.startTime)}</TableCell>
-                  <TableCell className="whitespace-nowrap">{formatDate(s.endTime)}</TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {formatDate(s.startTime || s.start_time)}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {formatDate(s.endTime || s.end_time)}
+                  </TableCell>
                   <TableCell className="text-right space-x-2 whitespace-nowrap">
                     <Button
                       size="sm"
                       variant="outline"
                       className="text-emerald-600 border-emerald-200 hover:bg-emerald-50"
-                      onClick={() => handleApprove(s.id, s.startTime, s.endTime)}
+                      onClick={() =>
+                        handleApprove(s.id, s.startTime || s.start_time, s.endTime || s.end_time)
+                      }
                     >
                       <Check className="w-4 h-4 sm:mr-1" />{' '}
                       <span className="hidden sm:inline">Aprovar</span>

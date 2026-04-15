@@ -16,7 +16,7 @@ function GuestForm({ close }: { close: () => void }) {
         addEntity('guests', form)
         close()
       }}
-      className="space-y-4 mt-4"
+      className="space-y-4"
     >
       <div className="space-y-2">
         <Label>Nome do Hóspede</Label>
@@ -28,16 +28,16 @@ function GuestForm({ close }: { close: () => void }) {
         />
       </div>
       <div className="space-y-2">
-        <Label>Quarto / Leito</Label>
+        <Label>Quarto / Acomodação</Label>
         <Input
           value={form.room}
           onChange={(e) => setForm({ ...form, room: e.target.value })}
           required
-          placeholder="Ex: 101"
+          placeholder="Ex: Quarto 102"
         />
       </div>
       <Button type="submit" className="w-full mt-4">
-        Salvar Hóspede
+        Salvar
       </Button>
     </form>
   )
